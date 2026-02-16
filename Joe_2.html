@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Joe's Hotdog Stand - Version 2</title>
+</head>
+<body>
+    <h1>Joe's Hotdog Stand</h1>
+
+    <h2>Menu</h2>
+    <p>Hotdog - $5.25</p>
+    <p>French Fries - $3.75</p>
+    <p>Drink - $2.50</p>
+
+    <h2>Specials</h2>
+    <p>Joe's Meal Deal - 1 Hotdog, 1 Fries, 1 Drink for $10.00</p>
+    <p>10% discount on orders of $30.00 or more (before tax)</p>
+
+    <hr>
+
+    <script>
+
+    function showMoney(n) {
+        var rounded = Math.round(n * 100) / 100;
+        var str = "" + rounded;
+        var dot = str.indexOf(".");
+        if (dot == -1) {
+            return str + ".00";
+        }
+        var decimals = str.length - dot - 1;
+        if (decimals == 1) {
+            return str + "0";
+        }
+        return str;
+    }
+
+    // array for item names and prices
+    var prices = [];
+    prices["Hotdog"] = 5.25;
+    prices["French Fries"] = 3.75;
+    prices["Drink"] = 2.50;
+
+    // array for item names and quantities
+    var quantities = [];
+
+    // constants for specials
+    const MEAL_DEAL = 10.00;
+    const TAX_RATE = 0.0625;
+    const DISCOUNT_RATE = 0.10;
+    const DISCOUNT_THRESHOLD = 30;
+
+    // display the menu and specials in an alert popup
+    var menuText = "Welcome to Joe's Hotdog Stand!\n\nMenu:\n";
+    for (var item in prices) {
+        menuText = menuText + item + " - $" + showMoney(prices[item]) + "\n";
+    }
+    menuText = menuText + "\nSpecials:\n";
+    menuText = menuText + "Joe's Meal Deal - 1 Hotdog, 1 Fries, 1 Drink for $" + showMoney(MEAL_DEAL) + "\n";
+    menuText = menuText + "10% discount on orders of $" + showMoney(DISCOUNT_THRESHOLD) + " or more (before tax)";
+    alert(menuText);
+
+    // use a loop to request quantity of each item and add to the second array
+    for (var item in prices) {
+        quantities[item] = parseInt(prompt("How many " + item + " would you like?", "0"));
+    }
+
+    // calculate meal deals - the minimum of the three quantities
+    var meals = Math.min(quantities["Hotdog"], quantities["French Fries"], quantities["Drink"]);
+
+    // remaining items after meal deals
+    var remainingDogs = quantities["Hotdog"] - meals;
+    var remainingFries = quantities["French Fries"] - meals;
+    var remainingSoda = quantities["Drink"] - meals;
+
+    // calculate subtotal
+    var subtotal = (meals * MEAL_DEAL) + (remainingDogs * prices["Hotdog"]) + (remainingFries * prices["French Fries"]) + (remainingSoda * prices["Drink"]);
+
+    // save subtotal before discount
+    var subtotalBeforeDiscount = subtotal;
+
+    // check for 10% discount if order is at least $30
+    var discount = 0;
+    if (subtotal >= DISCOUNT_THRESHOLD) {
+        discount = subtotal * DISCOUNT_RATE;
+        subtotal = subtotal - discount;
+    }
+
+    // calculate 6.25% MA meals tax on the discounted subtotal
+    var tax = subtotal * TAX_RATE;
+
+    // calculate final total
+    var total = subtotal + tax;
+
+    // display the order on the page
+    document.write("<h2>Your Order</h2>");
+
+    // use a loop to display each item's quantity and cost
+    for (var item in prices) {
+        document.write("<p>" + item + ": " + quantities[item] + " - $" + showMoney(quantities[item] * prices[item]) + "</p>");
+    }
+
+    if (meals > 0) {
+        document.write("<p>Meal Deals applied: " + meals + " (saves $" + showMoney(meals * (prices["Hotdog"] + prices["French Fries"] + prices["Drink"]) - meals * MEAL_DEAL) + ")</p>");
+    }
+
+    document.write("<hr>");
+    document.write("<p>Subtotal: $" + showMoney(subtotalBeforeDiscount) + "</p>");
+
+    if (discount > 0) {
+        document.write("<p>Discount (10%): -$" + showMoney(discount) + "</p>");
+    } else {
+        document.write("<p>Discount: $0.00</p>");
+    }
+    document.write("<p>Subtotal after discount: $" + showMoney(subtotal) + "</p>");
+
+    document.write("<p>Tax (6.25%): $" + showMoney(tax) + "</p>");
+    document.write("<p><strong>Total: $" + showMoney(total) + "</strong></p>");
+    </script>
+</body>
+</html>
