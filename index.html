@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Joe's Hotdog Stand</title>
+</head>
+<body>
+    <h1>Joe's Hotdog Stand</h1>
+
+    <h2>Menu</h2>
+    <p>Hotdog - $5.25</p>
+    <p>French Fries - $3.75</p>
+    <p>Drink - $2.50</p>
+
+    <h2>Specials</h2>
+    <p>Joe's Meal Deal - 1 Hotdog, 1 Fries, 1 Drink for $10.00</p>
+    <p>10% discount on orders of $30.00 or more (before tax)</p>
+
+    <hr>
+
+    <script>
+
+    // showMoney - takes a floating point number and returns a string rounded to exactly 2 decimal places
+    function showMoney(n) {
+        var rounded = Math.round(n * 100) / 100;
+        var str = "" + rounded;
+        var dot = str.indexOf(".");
+        if (dot == -1) {
+            return str + ".00";
+        }
+        var decimals = str.length - dot - 1;
+        if (decimals == 1) {
+            return str + "0";
+        }
+        return str;
+    }
+
+    // constants for item prices
+    const DOG_PRICE = 5.25;
+    const FRIES_PRICE = 3.75;
+    const DRINK_PRICE = 2.50;
+    const MEAL_DEAL = 10.00;
+    const TAX_RATE = 0.0625;
+    const DISCOUNT_RATE = 0.10;
+    const DISCOUNT_THRESHOLD = 30;
+
+    // display the menu and specials in an alert popup
+    alert("Welcome to Joe's Hotdog Stand!\n\n" +
+        "Menu:\n" +
+        "Hotdog - $" + showMoney(DOG_PRICE) + "\n" +
+        "French Fries - $" + showMoney(FRIES_PRICE) + "\n" +
+        "Drink - $" + showMoney(DRINK_PRICE) + "\n\n" +
+        "Specials:\n" +
+        "Joe's Meal Deal - 1 Hotdog, 1 Fries, 1 Drink for $" + showMoney(MEAL_DEAL) + "\n" +
+        "10% discount on orders of $" + showMoney(DISCOUNT_THRESHOLD) + " or more (before tax)");
+
+    // ask the user for quantities using prompt
+    var numDogs = parseInt(prompt("How many hotdogs would you like?", "0"));
+    var numFries = parseInt(prompt("How many french fries would you like?", "0"));
+    var numSoda = parseInt(prompt("How many drinks would you like?", "0"));
+
+    // calculate meal deals - the minimum of the three quantities
+    var meals = Math.min(numDogs, numFries, numSoda);
+
+    // remaining items after meal deals
+    var remainingDogs = numDogs - meals;
+    var remainingFries = numFries - meals;
+    var remainingSoda = numSoda - meals;
+
+    // calculate subtotal
+    var subtotal = (meals * MEAL_DEAL) + (remainingDogs * DOG_PRICE) + (remainingFries * FRIES_PRICE) + (remainingSoda * DRINK_PRICE);
+
+    // save subtotal before discount
+    var subtotalBeforeDiscount = subtotal;
+
+    // check for 10% discount if order is at least $30
+    var discount = 0;
+    if (subtotal >= DISCOUNT_THRESHOLD) {
+        discount = subtotal * DISCOUNT_RATE;
+        subtotal = subtotal - discount;
+    }
+
+    // calculate 6.25% MA meals tax on the discounted subtotal
+    var tax = subtotal * TAX_RATE;
+
+    // calculate final total
+    var total = subtotal + tax;
+
+    // display the order on the page
+    document.write("<h2>Your Order</h2>");
+    document.write("<p>Hotdogs: " + numDogs + " - $" + showMoney(numDogs * DOG_PRICE) + "</p>");
+    document.write("<p>French Fries: " + numFries + " - $" + showMoney(numFries * FRIES_PRICE) + "</p>");
+    document.write("<p>Drinks: " + numSoda + " - $" + showMoney(numSoda * DRINK_PRICE) + "</p>");
+
+    if (meals > 0) {
+        document.write("<p>Meal Deals applied: " + meals + " (saves $" + showMoney(meals * (DOG_PRICE + FRIES_PRICE + DRINK_PRICE) - meals * MEAL_DEAL) + ")</p>");
+    }
+
+    document.write("<hr>");
+    document.write("<p>Subtotal: $" + showMoney(subtotalBeforeDiscount) + "</p>");
+
+    if (discount > 0) {
+        document.write("<p>Discount (10%): -$" + showMoney(discount) + "</p>");
+    } else {
+        document.write("<p>Discount: $0.00</p>");
+    }
+    document.write("<p>Subtotal after discount: $" + showMoney(subtotal) + "</p>");
+
+    document.write("<p>Tax (6.25%): $" + showMoney(tax) + "</p>");
+    document.write("<p>Total: $" + showMoney(total) + "</p>");
+    </script>
+</body>
+</html>
